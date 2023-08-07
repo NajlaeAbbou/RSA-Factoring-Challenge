@@ -45,4 +45,4 @@ else
                 _factorize $res
 
         done < "$1"
-fi)
+fi
