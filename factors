@@ -1,35 +1,49 @@
-#!/usr/bin/env bash
-
-_factorize()
+#!/bin/bash
+<<'###'
+Factorize as many numbers as possible into a product of two smaller numbers.
+->Usage: factors <file>
+->where <file> is a file containing natural numbers to factor.
+->One number per line
+->You can assume that all lines will be valid natural numbers greater than 1
+->You can assume that there will be no empy line, and no space before and after the valid number
+->The file will always end with a new line
+->Output format: n=p*q
+->one factorization per line
+->p and q don’t have to be prime numbers
+->You can work on the numbers of the file in the order of your choice
+->Your program should run without any dependency: You will not be able to install anything on the machine we will run your program on
+->Time limit: Your program will be killed after 5 seconds if it hasn’t finish
+###
+_factor()
 {
 	if [ $# -ne 3 ];
         then
                 args=("$@")
-                c=0
-                n2=1
-                for a in ${args[*]};
+                count=0
+                nbr2=1
+                for a in "${args[@]}";
                 do
-                        if [ $c -gt 1 ];
+                        if [ $count -gt 1 ];
                         then
-                                n2=$(echo $a*$n2 | bc)
+                                nbr2=$(echo $a*$nbr2 | bc)
                         fi
-                        c=$((c + 1))
+                        count=$((count + 1))
                 done
         else
-                n2=$3
+                nbr2=$3
         fi
 
-        n1=$2
-        n=$(echo "$1" | tr ':' '=')
+        nbr1=$2
+        nbr=$(echo "$1" | tr ':' '=')
 
-        res=$(echo "if($n2 > $n1) 1 else 0" | bc)
-	        if ((result == 1)); then
-		        np=$n1
-		        n1=$n2
-		        n2=$np
+        output=$(echo "if($nbr2 > $nbr1) 1 else 0" | bc)
+	        if ((output == 1)); then
+		        tmp=$nbr1
+		        nbr1=$nbr2
+		        nbr2=$tmp
                 fi
 
-        echo "$n$n1*$n2"
+        echo "$nbr$nbr1*$nbr2"
 }
 
 if [ $# -ne 1 ]
@@ -38,11 +52,12 @@ then
         exit 1
 else
 
-        while read i
-        do
+	while read -r i;
+	do
+        # Run rsa_factor() with a 5-second timeout
+        output=$(timeout 5s factor "$i")
+        echo "$output" | _factor $output
+	done < "$1"
 
-                res=$(factor "$i")
-                _factorize $res
 
-        done < "$1"
 fi
