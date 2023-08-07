@@ -23,7 +23,7 @@ _factorize()
         n=$(echo "$1" | tr ':' '=')
 
         res=$(echo "if($n2 > $n1) 1 else 0" | bc)
-	        if ((result == 1)); then
+	        if ((res == 1)); then
 		        np=$n1
 		        n1=$n2
 		        n2=$np
@@ -34,7 +34,7 @@ _factorize()
 
 if [ $# -ne 1 ]
 then
-        echo 'Usage: factors <file>'
+        echo 'Usage: rsa <file>'
         exit 1
 else
 
